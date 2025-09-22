@@ -112,3 +112,6 @@ WebGLTemplates/
 
 .idea/
 *.DotSettings.user
+CLAUDE.md
+.claude/
+unity_gamejam_template.md
