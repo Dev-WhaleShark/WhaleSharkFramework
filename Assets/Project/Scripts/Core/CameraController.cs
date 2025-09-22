@@ -37,10 +37,9 @@ namespace WhaleShark.Core
             followTarget = target;
             if (followCamera != null)
             {
-                // Unity 6 Cinemachine의 새로운 Target 시스템
                 followCamera.Target.TrackingTarget = target;
 
-                // LookAt은 선택적으로 설정 (2D 게임에서는 보통 불필요)
+                // LookAt은 선택적으로 설정 
                 // followCamera.LookAt = target;
             }
         }
@@ -72,7 +71,6 @@ namespace WhaleShark.Core
 
         /// <summary>
         /// 카메라의 댐핑과 거리를 설정합니다.
-        /// 주의: Unity 6 Cinemachine에서는 에디터에서 미리 설정하는 것을 권장합니다.
         /// </summary>
         public void SetCameraSettings(float damping, float distance)
         {

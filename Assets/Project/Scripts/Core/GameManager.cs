@@ -5,19 +5,21 @@ namespace WhaleShark.Gameplay
 {
     public class GameManager : MonoBehaviour
     {
+        /// <summary>싱글톤 인스턴스</summary>
         public static GameManager I;
 
         [Header("Game State")]
+        /// <summary>게임 일시정지 상태</summary>
         public bool isPaused = false;
-        public int currentScore = 0;
-        public int currentLevel = 1;
+
+        /// <summary>게임 시작 후 경과 시간</summary>
         public float gameTime = 0f;
+        
 
-        [Header("Player")]
-        public Transform playerTransform;
-        public int playerHealth = 100;
-        public int maxHealth = 100;
-
+        /// <summary>
+        /// 싱글톤 패턴 초기화
+        /// 이미 인스턴스가 존재하면 현재 객체를 삭제합니다
+        /// </summary>
         void Awake()
         {
             if (I == null)
@@ -30,6 +32,10 @@ namespace WhaleShark.Gameplay
             }
         }
 
+        /// <summary>
+        /// 이벤트 구독 등록
+        /// 게임 시작 시 필요한 이벤트들을 구독합니다
+        /// </summary>
         void Start()
         {
             EventBus.PauseToggled += OnPauseToggled;
@@ -42,82 +48,40 @@ namespace WhaleShark.Gameplay
             EventBus.PlayerDied -= OnPlayerDied;
         }
 
+        /// <summary>
+        /// 매 프레임 업데이트
+        /// 게임 시간 카운트 및 입력 처리
+        /// </summary>
         void Update()
         {
             if (!isPaused)
             {
                 gameTime += Time.deltaTime;
             }
-
-            HandleInput();
         }
-
-        void HandleInput()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                TogglePause();
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            // 디버그 단축키
-            if (Input.GetKeyDown(KeyCode.F1))
-            {
-                AddScore(100);
-            }
-
-            if (Input.GetKeyDown(KeyCode.F2))
-            {
-                TakeDamage(10);
-            }
-
-            if (Input.GetKeyDown(KeyCode.F3))
-            {
-                Heal(20);
-            }
-#endif
-        }
-
+        
+        /// <summary>
+        /// 게임 일시정지 상태를 토글합니다
+        /// </summary>
         public void TogglePause()
         {
             isPaused = !isPaused;
             EventBus.RaisePause(isPaused);
         }
-
-        public void AddScore(int points)
-        {
-            currentScore += points;
-            EventBus.RaiseScoreChanged(currentScore);
-
-            if (currentScore > SaveService.Data.highScore)
-            {
-                SaveService.UpdateHighScore(currentScore);
-                EventBus.RaiseToast($"새로운 최고 기록! {currentScore}점");
-            }
-        }
-
-        public void TakeDamage(int damage)
-        {
-            playerHealth = Mathf.Max(0, playerHealth - damage);
-            EventBus.RaiseHealthChanged(playerHealth);
-
-            if (playerHealth <= 0)
-            {
-                EventBus.RaisePlayerDied();
-            }
-        }
-
-        public void Heal(int amount)
-        {
-            playerHealth = Mathf.Min(maxHealth, playerHealth + amount);
-            EventBus.RaiseHealthChanged(playerHealth);
-        }
-
+        
+        /// <summary>
+        /// 일시정지 상태 변경 이벤트 핸들러
+        /// </summary>
+        /// <param name="paused">일시정지 여부</param>
         void OnPauseToggled(bool paused)
         {
             isPaused = paused;
         }
 
+        /// <summary>
+        /// 플레이어 사망 이벤트 핸들러
+        /// 게임 오버 처리 및 데이터 저장
+        /// </summary>
         void OnPlayerDied()
         {
             Debug.Log("Player died!");
@@ -127,11 +91,17 @@ namespace WhaleShark.Gameplay
             SaveService.Save();
         }
 
+        /// <summary>
+        /// 게임을 다시 시작합니다
+        /// </summary>
         public void RestartGame()
         {
             SceneLoader.Load("Gameplay");
         }
 
+        /// <summary>
+        /// 메인 메뉴로 이동합니다
+        /// </summary>
         public void GoToMainMenu()
         {
             SceneLoader.Load("MainMenu");

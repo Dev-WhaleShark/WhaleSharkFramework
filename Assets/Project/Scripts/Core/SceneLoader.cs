@@ -27,7 +27,6 @@ namespace WhaleShark.Core
 
         IEnumerator LoadRoutine(string sceneName, Action<float> onProgress)
         {
-            yield return FadeCanvas.Out();
             var op = SceneManager.LoadSceneAsync(sceneName);
             op.allowSceneActivation = false;
 
@@ -40,7 +39,6 @@ namespace WhaleShark.Core
 
             // 다음 프레임까지 대기 후 페이드 인 (씬 활성화 안정화)
             yield return null;
-            yield return FadeCanvas.In();
         }
     }
 }

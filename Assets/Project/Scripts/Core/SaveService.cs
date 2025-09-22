@@ -55,8 +55,8 @@ namespace WhaleShark.Core
             Screen.fullScreen = Data.fullscreen;
             if (AudioManager.I != null)
             {
-                AudioManager.SetBGMVolume(Data.bgm);
-                AudioManager.SetSEVolume(Data.se);
+                AudioManager.SetBgmVolume(Data.bgm);
+                AudioManager.SetSeVolume(Data.se);
             }
         }
 
