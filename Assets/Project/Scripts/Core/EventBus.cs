@@ -20,23 +20,12 @@ namespace WhaleShark.Core
         public static event Action<bool> PauseToggled;
         /// <summary>일시정지 상태 변경 이벤트를 발생시킵니다</summary>
         /// <param name="on">true: 일시정지, false: 재개</param>
-        public static void RaisePause(bool on) => PauseToggled?.Invoke(on);
-
-        /// <summary>토스트 메시지 표시 이벤트</summary>
-        public static event Action<string> Toast;
-        /// <summary>토스트 메시지 표시 이벤트를 발생시킵니다</summary>
-        /// <param name="message">표시할 메시지</param>
-        public static void RaiseToast(string message) => Toast?.Invoke(message);
+        public static void PublishPause(bool on) => PauseToggled?.Invoke(on);
 
         /// <summary>플레이어 사망 시 발생하는 이벤트</summary>
         public static event Action PlayerDied;
         /// <summary>플레이어 사망 이벤트를 발생시킵니다</summary>
-        public static void RaisePlayerDied() => PlayerDied?.Invoke();
-
-        /// <summary>플레이어 체력이 변경되었을 때 발생하는 이벤트</summary>
-        public static event Action<int> HealthChanged;
-        /// <summary>체력 변경 이벤트를 발생시킵니다</summary>
-        /// <param name="health">현재 체력</param>
-        public static void RaiseHealthChanged(int health) => HealthChanged?.Invoke(health);
+        public static void PublishPlayerDied() => PlayerDied?.Invoke();
+        
     }
 }

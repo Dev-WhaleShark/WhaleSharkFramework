@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using WhaleShark.Gameplay;
 
 namespace WhaleShark.Core
 {
-    public class InputManager : MonoBehaviour
+    public class InputManager : Singleton<InputManager>
     {
-        public static InputManager I;
-
         [Header("Input Actions")]
         public InputActionAsset inputActions;
 
@@ -19,7 +18,6 @@ namespace WhaleShark.Core
         InputAction interactAction;
 
         // UI Actions
-        InputAction pauseAction;
         InputAction cancelAction;
 
         public Vector2 MoveInput { get; private set; }
@@ -27,18 +25,10 @@ namespace WhaleShark.Core
         public bool JumpHeld { get; private set; }
         public bool InteractPressed { get; private set; }
 
-        void Awake()
+        protected override void Awake()
         {
-            if (I == null)
-            {
-                I = this;
-                DontDestroyOnLoad(gameObject);
-                SetupInputActions();
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            base.Awake();
+            SetupInputActions();
         }
 
         void Start()
@@ -59,7 +49,6 @@ namespace WhaleShark.Core
             interactAction = playerActionMap?.FindAction("Interact");
 
             // UI Actions
-            pauseAction = uiActionMap?.FindAction("Pause");
             cancelAction = uiActionMap?.FindAction("Cancel");
 
             // 이벤트 연결
@@ -71,9 +60,9 @@ namespace WhaleShark.Core
 
             if (interactAction != null)
                 interactAction.performed += OnInteractPerformed;
-
-            if (pauseAction != null)
-                pauseAction.performed += OnPausePerformed;
+            
+            if (cancelAction != null)
+                cancelAction.performed += OnCancelPerformed;
         }
 
         void Update()
@@ -101,12 +90,12 @@ namespace WhaleShark.Core
         {
             InteractPressed = true;
         }
-
-        void OnPausePerformed(InputAction.CallbackContext context)
+        
+        void OnCancelPerformed(InputAction.CallbackContext context)
         {
-            // GameManager를 동적으로 찾아서 호출 (순환 의존성 방지)
-            var gameManager = FindFirstObjectByType<WhaleShark.Gameplay.GameManager>();
-            gameManager?.TogglePause();
+            GameManager.Instance.TogglePause();
+
+            Debug.Log("Cancel Pressed");
         }
 
         public void EnablePlayerInput()

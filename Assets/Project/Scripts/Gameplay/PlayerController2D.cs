@@ -36,11 +36,7 @@ namespace WhaleShark.Gameplay
 
         void Start()
         {
-            input = InputManager.I;
-
-            // 카메라 타겟 설정
-            if (CameraController.I != null)
-                CameraController.I.SetFollowTarget(transform);
+            input = InputManager.Instance;
         }
 
         void Update()
@@ -62,7 +58,6 @@ namespace WhaleShark.Gameplay
         {
             if (input != null)
             {
-                // New Input System 사용
                 moveX = input.MoveInput.x;
                 if (input.JumpPressed)
                 {

@@ -5,23 +5,8 @@ using UnityEngine.SceneManagement;
 
 namespace WhaleShark.Core
 {
-    public class SceneLoader : MonoBehaviour
+    public class sceneLoader : Singleton<sceneLoader>
     {
-        public static SceneLoader Instance;
-
-        void Awake()
-        {
-            if(Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
-
         public static void Load(string sceneName, Action<float> onProgress = null)
             => Instance.StartCoroutine(Instance.LoadRoutine(sceneName, onProgress));
 

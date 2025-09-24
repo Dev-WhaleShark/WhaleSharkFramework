@@ -3,34 +3,14 @@ using WhaleShark.Core;
 
 namespace WhaleShark.Gameplay
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : Singleton<GameManager>
     {
-        /// <summary>싱글톤 인스턴스</summary>
-        public static GameManager I;
-
-        [Header("Game State")]
-        /// <summary>게임 일시정지 상태</summary>
+        [Header("Game State")] 
         public bool isPaused = false;
 
         /// <summary>게임 시작 후 경과 시간</summary>
         public float gameTime = 0f;
         
-
-        /// <summary>
-        /// 싱글톤 패턴 초기화
-        /// 이미 인스턴스가 존재하면 현재 객체를 삭제합니다
-        /// </summary>
-        void Awake()
-        {
-            if (I == null)
-            {
-                I = this;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
 
         /// <summary>
         /// 이벤트 구독 등록
@@ -66,7 +46,7 @@ namespace WhaleShark.Gameplay
         public void TogglePause()
         {
             isPaused = !isPaused;
-            EventBus.RaisePause(isPaused);
+            EventBus.PublishPause(isPaused);
         }
         
         /// <summary>
@@ -85,26 +65,11 @@ namespace WhaleShark.Gameplay
         void OnPlayerDied()
         {
             Debug.Log("Player died!");
-            EventBus.RaiseToast("Game Over!");
-
-            // 게임 오버 처리
-            SaveService.Save();
         }
 
-        /// <summary>
-        /// 게임을 다시 시작합니다
-        /// </summary>
-        public void RestartGame()
+        private void TestDied()
         {
-            SceneLoader.Load("Gameplay");
-        }
-
-        /// <summary>
-        /// 메인 메뉴로 이동합니다
-        /// </summary>
-        public void GoToMainMenu()
-        {
-            SceneLoader.Load("MainMenu");
+            EventBus.PublishPlayerDied();
         }
     }
 }
